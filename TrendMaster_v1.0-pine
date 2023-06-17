@@ -22,13 +22,14 @@ fill(bodyMiddle, upTrend, color.new(color.green, 90), fillgaps=false)
 fill(bodyMiddle, downTrend, color.new(color.red, 90), fillgaps=false)
 
 // MA Cross göstergesi 1
+showMACross1 = input(true, title="Show MA Cross 1")
 shortlen = input(9, title="MA Cross 1 - Short MA Length")
 longlen = input(21, title="MA Cross 1 - Long MA Length")
 short1 = ta.sma(close, shortlen)
 long1 = ta.sma(close, longlen)
-plot(short1, color=#FF6D00, title="MACross 1 - Short")
-plot(long1, color=#43A047, title="MACross 1 - Long")
-plot(ta.cross(short1, long1) ? short1 : na, title="MA Cross 1 Point", color=#fdfdfd, style=plot.style_cross, linewidth=4)
+plot(showMACross1 ? short1 : na, color=#FF6D00, title="MACross 1 - Short")
+plot(showMACross1 ? long1 : na, color=#43A047, title="MACross 1 - Long")
+plot(showMACross1 and ta.cross(short1, long1) ? short1 : na, title="MA Cross 1 Point", color=#fdfdfd, style=plot.style_cross, linewidth=4)
 
 // MA Cross göstergesi 2
 showMACross2 = input(false, title="Show MA Cross 2")
