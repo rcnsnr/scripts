@@ -1,5 +1,5 @@
 //@version=5
-indicator(title="TrendMaster", overlay=true, timeframe="", timeframe_gaps=true)
+indicator(title="TrendMaster v1.0", overlay=true, timeframe="", timeframe_gaps=true)
 
 // Parabolic SAR göstergesi
 start = input(0.02, title="Parabolic SAR - Start")
