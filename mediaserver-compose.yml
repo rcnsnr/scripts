@@ -7,7 +7,7 @@ services:
     environment:
       - PUID=1000
       - PGID=1000
-      - TZ=Etc/UTC
+      - TZ=UTC+03:00
     volumes:
       - /mnt/4CA6BC377086A62B/MEDIA/sonarr/data:/config
       - /mnt/4CA6BC377086A62B/MEDIA/sonarr/tvseries:/tv #optional
@@ -21,7 +21,7 @@ services:
     environment:
       - PUID=1000
       - PGID=1000
-      - TZ=Etc/UTC
+      - TZ=UTC+03:00
     volumes:
       - /mnt/4CA6BC377086A62B/MEDIA/radarr/data:/config
       - /mnt/4CA6BC377086A62B/MEDIA/radarr/movies:/movies #optional
@@ -35,7 +35,7 @@ services:
     environment:
       - PUID=1000
       - PGID=1000
-      - TZ=Etc/UTC
+      - TZ=UTC+03:00
     volumes:
       - /mnt/4CA6BC377086A62B/MEDIA/prowlarr/data:/config
     ports:
@@ -47,7 +47,7 @@ services:
     environment:
       - PUID=1000
       - PGID=1000
-      - TZ=Etc/UTC
+      - TZ=UTC+03:00
     volumes:
       - /mnt/4CA6BC377086A62B/MEDIA/lidarr/appdata/config:/config
       - /mnt/4CA6BC377086A62B/MEDIA/lidarr/music:/music #optional
@@ -61,7 +61,7 @@ services:
     environment:
       - PUID=1000
       - PGID=1000
-      - TZ=Etc/UTC
+      - TZ=UTC+03:00
     volumes:
       - /mnt/4CA6BC377086A62B/MEDIA/bazarr/config:/config
       - /mnt/4CA6BC377086A62B/MEDIA/bazarr/movies:/movies #optional
@@ -75,7 +75,7 @@ services:
     environment:
       - PUID=1000
       - PGID=1000
-      - TZ=Etc/UTC
+      - TZ=UTC+03:00
     volumes:
       - /mnt/4CA6BC377086A62B/MEDIA/emby/library:/config
       - /mnt/4CA6BC377086A62B/MEDIA/emby/tvshows:/data/tvshows
