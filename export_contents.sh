@@ -13,7 +13,7 @@ EXCLUDE_DIRS=("__pycache__" "tail-db" "sil" "logs" "data" "venv" ".git" "myenv" 
 EXCLUDE_FILES=("export_contents.sh" "export_contents.v2.sh" ".env" "readme.md" "requirements.in" "roadmap.md" "__init__.py" "*.pyc" "docker-compose.ymlbak")
 EXCLUDE_FILES+=("$OUTPUT_FILE")
 
-ALLOWED_EXTENSIONS=("py" "sh" "html" "css" "js" "md" "txt" "json" "yaml" "yml" "xml" "ini" "cfg" "conf" "bat" "cmd")
+ALLOWED_EXTENSIONS=("py" "Dockerfile" "sh" "html" "css" "js" "md" "txt" "json" "yaml" "yml" "xml" "ini" "cfg" "conf" "bat" "cmd")
 
 PROJECT_ROOT=$(pwd)
 ROOT_NAME=$(basename "$PROJECT_ROOT")
