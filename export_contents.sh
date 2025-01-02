@@ -2,60 +2,133 @@
 
 # -----------------------------
 # Script: export_contents.sh
-# Açıklama: Belirli dizinleri ve dosyaları hariç tutarak proje dizinindeki tüm
-#           metin tabanlı dosyaların içeriklerini istenen formatta bir metin dosyasına yazdırır.
+# Açıklama: Proje dizin yapısını ve metin tabanlı dosyaların içeriklerini dışa aktarır.
 # Kullanım: ./export_contents.sh
 # -----------------------------
 
-OUTPUT_FILE="proje_icerikleri.txt"
+set -e  # Hata durumunda script'i durdur
 
-EXCLUDE_DIRS=("__pycache__" "tail-db" "sil" "logs" "data" "venv" ".git" "myenv" ".vscode")
-EXCLUDE_FILES=("export_contents.sh" "export_contents.v2.sh" ".env" "readme.md" "requirements.in" "roadmap.md" "__init__.py" "*.pyc" "docker-compose.ymlbak")
-EXCLUDE_FILES+=("$OUTPUT_FILE")
+OUTPUT_DIR="./"
+TIMESTAMP=$(date +"%Y-%m-%d-%H-%M-%S-UTC")
+OUTPUT_FILE="repo-to-text_${TIMESTAMP}.txt"
 
-ALLOWED_EXTENSIONS=("py" "Dockerfile" "sh" "html" "css" "js" "md" "txt" "json" "yaml" "yml" "xml" "ini" "cfg" "conf" "bat" "cmd")
+EXCLUDE_DIRS=(
+    "__pycache__"
+    ".git"
+    "node_modules"
+    "venv"
+    ".vscode"
+    "dist"
+    "build"
+    "logs"
+    ".next"
+    ".pytest_cache"
+    ".mypy_cache"
+    "cache"
+    "coverage"
+    "docker"
+    ".idea"
+    ".env"
+)
+
+EXCLUDE_FILES=(
+    "*.lock"
+    "*.pyc"
+    "*.log"
+    "*.env"
+    "*.bak"
+    "package-lock.json"
+    "yarn.lock"
+    "pnpm-lock.yaml"
+    "export_contents.sh"
+    ".gitignore"
+    ".dockerignore"
+    "repo-to-text_*"
+)
+
+ALLOWED_EXTENSIONS=(
+    "py"
+    "ts"
+    "js"
+    "jsx"
+    "tsx"
+    "html"
+    "css"
+    "scss"
+    "md"
+    "txt"
+    "json"
+    "yaml"
+    "yml"
+    "ini"
+    "cfg"
+    "conf"
+    "Dockerfile"
+)
 
 PROJECT_ROOT=$(pwd)
 ROOT_NAME=$(basename "$PROJECT_ROOT")
 
+# Çıkış dosyasını temizle
 if [ -f "$OUTPUT_FILE" ]; then
     rm "$OUTPUT_FILE"
 fi
 
-# İşlenen dosyaların listesini tutan bir array
-PROCESSED_FILES=()
+echo "Directory: $ROOT_NAME" >> "$OUTPUT_FILE"
+echo "" >> "$OUTPUT_FILE"
 
+# Dizin yapısını ekle
+echo "Directory Structure:" >> "$OUTPUT_FILE"
+echo '```' >> "$OUTPUT_FILE"
+
+# Dizin yapısını oluştur
+tree -a -I "$(IFS=\|; echo "${EXCLUDE_DIRS[*]}")" >> "$OUTPUT_FILE"
+echo '```' >> "$OUTPUT_FILE"
+echo "" >> "$OUTPUT_FILE"
+
+# Dosya içeriğini ekleyen fonksiyon
+function process_file() {
+    local file_path="$1"
+    local relative_path="${file_path#$PROJECT_ROOT/}"
+    
+    echo "Contents of $relative_path:" >> "$OUTPUT_FILE"
+    echo '```' >> "$OUTPUT_FILE"
+    
+    cat "$file_path" >> "$OUTPUT_FILE"
+    
+    echo '```' >> "$OUTPUT_FILE"
+    echo "" >> "$OUTPUT_FILE"
+}
+
+# Dizin içinde gezerek dosyaları işleyen fonksiyon
 function traverse_directory() {
     local current_dir="$1"
-    local relative_path="$2"
-
-    for exclude in "${EXCLUDE_DIRS[@]}"; do
-        if [ "$(basename "$current_dir")" == "$exclude" ]; then
-            return
-        fi
-    done
-
+    
     for entry in "$current_dir"/*; do
         if [ ! -e "$entry" ]; then
             continue
         fi
-
+        
+        # Dizinleri hariç tut
         if [ -d "$entry" ]; then
-            if [ -z "$relative_path" ]; then
-                new_relative_path="$(basename "$entry")"
-            else
-                new_relative_path="$relative_path/$(basename "$entry")"
-            fi
-            traverse_directory "$entry" "$new_relative_path"
-        elif [ -f "$entry" ]; then
-            if [ "$(basename "$entry")" == "$(basename "$OUTPUT_FILE")" ]; then
+            skip_dir=false
+            for exclude in "${EXCLUDE_DIRS[@]}"; do
+                if [[ "$entry" == *"$exclude"* ]]; then
+                    skip_dir=true
+                    break
+                fi
+            done
+            if [ "$skip_dir" = true ]; then
                 continue
             fi
-
+            traverse_directory "$entry"
+        elif [ -f "$entry" ]; then
             filename=$(basename "$entry")
             skip_file=false
+
+            # Dosya hariç tutma kuralları
             for excl_file in "${EXCLUDE_FILES[@]}"; do
-                if [[ "$filename" == $excl_file ]]; then
+                if [[ "$filename" == $excl_file || "$filename" == *$excl_file ]]; then
                     skip_file=true
                     break
                 fi
@@ -65,41 +138,16 @@ function traverse_directory() {
                 continue
             fi
 
+            # Uzantı kontrolü
             extension="${filename##*.}"
-            extension_lower=$(echo "$extension" | tr '[:upper:]' '[:lower:]')
-
-            if [[ " ${ALLOWED_EXTENSIONS[@]} " =~ " ${extension_lower} " ]] || [ "$filename" == "Dockerfile" ]; then
-                if [ -z "$relative_path" ]; then
-                    full_path="${ROOT_NAME}/$filename"
-                else
-                    full_path="${ROOT_NAME}/${relative_path}/$filename"
-                fi
-                echo "$full_path" >> "$OUTPUT_FILE"
-                PROCESSED_FILES+=("$full_path")
-
-                echo "" >> "$OUTPUT_FILE"
-                echo "--- Başlangıç ---" >> "$OUTPUT_FILE"
-                echo "" >> "$OUTPUT_FILE"
-                cat "$entry" >> "$OUTPUT_FILE"
-                echo "" >> "$OUTPUT_FILE"
-                echo "--- Bitiş ---" >> "$OUTPUT_FILE"
-                echo "" >> "$OUTPUT_FILE"
-            else
-                echo "İzin verilmeyen uzantılı dosya atlandı: $entry" >&2
+            if [[ " ${ALLOWED_EXTENSIONS[@]} " =~ " ${extension} " || "$filename" == "Dockerfile" ]]; then
+                process_file "$entry"
             fi
         fi
     done
 }
 
-traverse_directory "$PROJECT_ROOT" ""
+# Dizinleri ve içerikleri işleyin
+traverse_directory "$PROJECT_ROOT"
 
-echo "Dosya içerikleri '$OUTPUT_FILE' dosyasına başarıyla yazdırıldı."
-
-# İşlenen dosyaları TREE başlığı altında yazdır
-{
-    echo "TREE"
-    echo "-----"
-    for file in "${PROCESSED_FILES[@]}"; do
-        echo "$file"
-    done
-} >> "$OUTPUT_FILE"
+echo "Repo içerikleri '$OUTPUT_FILE' dosyasına başarıyla yazdırıldı."
