@@ -1,11 +1,4 @@
 #!/bin/bash
-
-# -----------------------------
-# Script: export_contents.sh
-# Açıklama: Proje dizin yapısını ve metin tabanlı dosyaların içeriklerini dışa aktarır.
-# Kullanım: ./export_contents.sh
-# -----------------------------
-
 set -e  # Hata durumunda script'i durdur
 
 OUTPUT_DIR="./"
@@ -29,6 +22,8 @@ EXCLUDE_DIRS=(
     "docker"
     ".idea"
     ".env"
+    "exports"
+    "monitoring/victoriametrics/indexdb/"
 )
 
 EXCLUDE_FILES=(
@@ -40,7 +35,8 @@ EXCLUDE_FILES=(
     "package-lock.json"
     "yarn.lock"
     "pnpm-lock.yaml"
-    "export_contents.sh"
+    "export_content*.sh"
+    "export_folder*.sh"
     ".gitignore"
     ".dockerignore"
     "repo-to-text_*"
@@ -74,15 +70,20 @@ if [ -f "$OUTPUT_FILE" ]; then
     rm "$OUTPUT_FILE"
 fi
 
-echo "Directory: $ROOT_NAME" >> "$OUTPUT_FILE"
+echo "Aşağıda projenin tüm repo içeriğini paylaştım. docs/talimatlar.md ve diğer .md dosyalarını oku hafızana al. talimatlara ve **ÇOK ÖNEMLİ!** yazan kısımlara kati bir şekilde uyarak geliştirmeye devam et." > "$OUTPUT_FILE"
 echo "" >> "$OUTPUT_FILE"
+
+echo "Directory: $ROOT_NAME" >> "$OUTPUT_FILE"
+#echo "" >> "$OUTPUT_FILE"
 
 # Dizin yapısını ekle
 echo "Directory Structure:" >> "$OUTPUT_FILE"
 echo '```' >> "$OUTPUT_FILE"
 
 # Dizin yapısını oluştur
-tree -a -I "$(IFS=\|; echo "${EXCLUDE_DIRS[*]}")" >> "$OUTPUT_FILE"
+#tree -a -I "$(IFS=\|; echo "${EXCLUDE_DIRS[*]}")" >> "$OUTPUT_FILE"
+tree -a -I "$(IFS=\|; echo "${EXCLUDE_DIRS[*]}|${EXCLUDE_FILES[*]}")" >> "$OUTPUT_FILE"
+
 echo '```' >> "$OUTPUT_FILE"
 echo "" >> "$OUTPUT_FILE"
 
@@ -151,3 +152,4 @@ function traverse_directory() {
 traverse_directory "$PROJECT_ROOT"
 
 echo "Repo içerikleri '$OUTPUT_FILE' dosyasına başarıyla yazdırıldı."
+
