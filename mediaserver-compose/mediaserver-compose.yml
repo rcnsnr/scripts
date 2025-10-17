@@ -8,7 +8,7 @@ services:
     environment:
       - PUID=1000
       - PGID=1000
-      - TZ=UTC+03:00
+      - TZ=Europe/Istanbul
     volumes:
       - /mnt/4CA6BC377086A62B/MEDIA/configs/sonarr:/config
       - /mnt/4CA6BC377086A62B/MEDIA/emby/tvshows:/tv #optional
@@ -26,7 +26,7 @@ services:
     environment:
       - PUID=1000
       - PGID=1000
-      - TZ=UTC+03:00
+      - TZ=Europe/Istanbul
     volumes:
       - /mnt/4CA6BC377086A62B/MEDIA/configs/radarr:/config
       - /mnt/4CA6BC377086A62B/MEDIA/emby/movies:/movies #optional
@@ -44,7 +44,7 @@ services:
     environment:
       - PUID=1000
       - PGID=1000
-      - TZ=UTC+03:00
+      - TZ=Europe/Istanbul
     volumes:
       - /mnt/4CA6BC377086A62B/MEDIA/configs/prowlarr:/config
     networks:
@@ -60,7 +60,7 @@ services:
     environment:
       - PUID=1000
       - PGID=1000
-      - TZ=UTC+03:00
+      - TZ=Europe/Istanbul
     volumes:
       - /mnt/4CA6BC377086A62B/MEDIA/configs/lidarr/config:/config
       - /mnt/4CA6BC377086A62B/MEDIA/emby/music:/music #optional
@@ -78,7 +78,7 @@ services:
     environment:
       - PUID=1000
       - PGID=1000
-      - TZ=UTC+03:00
+      - TZ=Europe/Istanbul
     volumes:
       - /mnt/4CA6BC377086A62B/MEDIA/configs/bazaar:/config
       - /mnt/4CA6BC377086A62B/MEDIA/emby/movies:/movies #optional
@@ -96,7 +96,7 @@ services:
     environment:
       - PUID=1000
       - PGID=1000
-      - TZ=Etc/UTC
+      - TZ=Europe/Istanbul
       - WEBUI_PORT=8080
     volumes:
       - /mnt/4CA6BC377086A62B/MEDIA/configs/qbittorrent:/config
