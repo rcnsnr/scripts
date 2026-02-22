@@ -40,6 +40,7 @@ Script, mevcut `~/.bash_aliases` dosyasını otomatik olarak yedekler (zaman dam
 ## Alias Listesi
 
 ### Temel
+
 - `ll`: Detaylı dosya listesi
 - `ld`: Sadece dizinler
 - `cls`: Ekranı temizle
@@ -48,6 +49,7 @@ Script, mevcut `~/.bash_aliases` dosyasını otomatik olarak yedekler (zaman dam
 - `mem`: Bellek kullanımı
 
 ### Docker
+
 - `dk`: docker
 - `dkc`: docker container
 - `dki`: docker images
@@ -56,12 +58,14 @@ Script, mevcut `~/.bash_aliases` dosyasını otomatik olarak yedekler (zaman dam
 - `dcu`: docker-compose up -d
 
 ### Git
+
 - `gst`: git status
 - `ga`: git add
 - `gp`: git push
 - `gco`: git checkout
 
 ### Kubernetes
+
 - `k`: kubectl
 - `kgp`: kubectl get pods
 - `klogs`: kubectl logs -f

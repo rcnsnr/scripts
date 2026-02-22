@@ -3,6 +3,7 @@
 ## Senaryo 1: İlk Kez Kullanım
 
 ### Adım 1: Mevcut Durumu Kaydet
+
 ```bash
 # Git commit ile snapshot al
 cd /path/to/your/repo
@@ -12,6 +13,7 @@ git tag -a "pre-scan-v1" -m "Before security masking"
 ```
 
 ### Adım 2: Dry-Run ile Test
+
 ```bash
 # Sadece tarama yap, hiçbir değişiklik yapma
 ./secure-repo-scanner.sh --dry-run /path/to/your/repo
@@ -38,6 +40,7 @@ git tag -a "pre-scan-v1" -m "Before security masking"
 ```
 
 ### Adım 3: Raporu İncele
+
 ```bash
 # Raporu oku
 cat security_scan_report_20251017_180000.txt
@@ -54,6 +57,7 @@ grep "Pattern:" security_scan_report_20251017_180000.txt | sort | uniq -c
 ```
 
 ### Adım 4: Gerçek Maskeleme
+
 ```bash
 # Gerçek maskeleme yap (backup otomatik alınır)
 ./secure-repo-scanner.sh /path/to/your/repo
@@ -63,6 +67,7 @@ grep "Pattern:" security_scan_report_20251017_180000.txt | sort | uniq -c
 ```
 
 ### Adım 5: Değişiklikleri Kontrol Et
+
 ```bash
 # Git diff ile değişiklikleri incele
 git diff
@@ -76,6 +81,7 @@ git diff
 ```
 
 ### Adım 6: Commit Et
+
 ```bash
 git add .
 git commit -m "Security: Masked sensitive credentials"
@@ -87,6 +93,7 @@ git tag -a "post-scan-v1" -m "After security masking"
 ## Senaryo 2: Büyük Monorepo Tarama
 
 ### Çoklu Dizinleri Hariç Tut
+
 ```bash
 ./secure-repo-scanner.sh \
     -e node_modules \
@@ -114,6 +121,7 @@ git tag -a "post-scan-v1" -m "After security masking"
 ## Senaryo 3: CI/CD Pipeline Entegrasyonu
 
 ### GitHub Actions
+
 ```bash
 # .github/workflows/security-scan.yml oluştur
 cat > .github/workflows/security-scan.yml << 'EOF'
@@ -128,16 +136,16 @@ on:
 jobs:
   security-scan:
     runs-on: ubuntu-latest
-    
+
     steps:
       - name: Checkout Code
         uses: actions/checkout@v3
-      
+
       - name: Run Security Scanner
         run: |
           chmod +x ./tools/secure-repo-scanner.sh
           ./tools/secure-repo-scanner.sh --dry-run .
-        
+
       - name: Check for Secrets
         run: |
           if grep -q "Bulunan hassas bilgi: [1-9]" security_scan_report_*.txt; then
@@ -147,7 +155,7 @@ jobs:
           else
             echo "✅ Hassas bilgi bulunamadı"
           fi
-      
+
       - name: Upload Security Report
         if: failure()
         uses: actions/upload-artifact@v3
@@ -159,6 +167,7 @@ EOF
 ```
 
 ### Pre-commit Hook
+
 ```bash
 # .git/hooks/pre-commit oluştur
 cat > .git/hooks/pre-commit << 'EOF'
@@ -194,6 +203,7 @@ chmod +x .git/hooks/pre-commit
 ## Senaryo 4: Çoklu Environment Yönetimi
 
 ### Production ve Staging Ayrımı
+
 ```bash
 # Production repo'yu tara ve maskele
 ./secure-repo-scanner.sh \
@@ -217,6 +227,7 @@ diff /reports/prod_security_$(date +%Y%m%d).txt \
 ## Senaryo 5: Docker İçinde Kullanım
 
 ### Dockerfile
+
 ```bash
 # Dockerfile oluştur
 cat > Dockerfile << 'EOF'
@@ -253,6 +264,7 @@ docker run -v /path/to/repo:/scan secure-scanner:1.0 --dry-run /scan
 ## Senaryo 6: Scheduled Tarama (Cron)
 
 ### Günlük Otomatik Tarama
+
 ```bash
 # Cron job oluştur
 cat > /etc/cron.daily/security-scan << 'EOF'
@@ -270,14 +282,14 @@ mkdir -p "$REPORT_DIR"
 for repo in "${REPOS[@]}"; do
     repo_name=$(basename "$repo")
     date_stamp=$(date +%Y%m%d_%H%M%S)
-    
+
     echo "Taranıyor: $repo"
-    
+
     /usr/local/bin/secure-repo-scanner.sh \
         --dry-run \
         --report "$REPORT_DIR/${repo_name}_${date_stamp}.txt" \
         "$repo"
-    
+
     # Hassas bilgi bulunduysa email gönder
     if [ $? -eq 1 ]; then
         mail -s "⚠️  Güvenlik Uyarısı: $repo_name" \
@@ -298,6 +310,7 @@ chmod +x /etc/cron.daily/security-scan
 ## Senaryo 7: Microservices Toplu Tarama
 
 ### Tüm Servisleri Tara
+
 ```bash
 #!/bin/bash
 
@@ -314,14 +327,14 @@ echo "" >> "$MASTER_REPORT"
 # Her microservice'i tara
 for service_dir in "$SERVICES_ROOT"/*/; do
     service_name=$(basename "$service_dir")
-    
+
     echo "🔍 Taranıyor: $service_name"
-    
+
     ./secure-repo-scanner.sh \
         --dry-run \
         --report "/tmp/${service_name}_report.txt" \
         "$service_dir"
-    
+
     # Sonuçları master raporda topla
     echo "Servis: $service_name" >> "$MASTER_REPORT"
     grep "Bulunan hassas bilgi:" "/tmp/${service_name}_report.txt" >> "$MASTER_REPORT"
@@ -341,6 +354,7 @@ cat "$MASTER_REPORT"
 ## Senaryo 8: Legacy Kod Temizliği
 
 ### Adım Adım Temizlik
+
 ```bash
 # 1. Mevcut durumu analiz et
 ./secure-repo-scanner.sh --dry-run /path/to/legacy > initial_scan.txt
@@ -374,6 +388,7 @@ diff initial_scan.txt second_scan.txt | grep "Bulunan hassas bilgi:"
 ## Senaryo 9: Hata Durumunda Geri Alma
 
 ### Rollback İşlemi
+
 ```bash
 # Maskeleme yaptınız ama bir şeyler ters gitti
 
@@ -401,6 +416,7 @@ git diff
 ## Senaryo 10: Raporlama ve Metrikler
 
 ### Metrik Toplama
+
 ```bash
 #!/bin/bash
 
@@ -433,7 +449,7 @@ echo "Haftalık Trend:"
 for week in {0..3}; do
     start_day=$((week * 7))
     end_day=$(((week + 1) * 7))
-    
+
     count=$(find "$REPORT_DIR" -name "*.txt" -mtime -$end_day -mtime +$start_day | wc -l)
     echo "Hafta $((4-week)): $count tarama"
 done
@@ -443,21 +459,24 @@ done
 
 ## En İyi Pratikler Özeti
 
-### ✅ Her Zaman Yapın:
+### ✅ Her Zaman Yapın
+
 1. Git commit ile checkpoint alın
 2. Dry-run ile test edin
 3. Raporu inceleyin
 4. Backup'ı saklayın
 5. Değişiklikleri test edin
 
-### ❌ Asla Yapmayın:
+### ❌ Asla Yapmayın
+
 1. `--no-backup` kullanmayın
 2. Backup'sız maskeleme yapmayın
 3. Raporu okumadan commit etmeyin
 4. Production'da test etmeyin
 5. Manuel backup almadan rollback yapmayın
 
-### 🎯 Öneriler:
+### 🎯 Öneriler
+
 1. CI/CD pipeline'ına entegre edin
 2. Scheduled scan'ler yapın
 3. Pre-commit hook kullanın

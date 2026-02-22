@@ -65,8 +65,10 @@
 ## Oluşturulan Dosyalar
 
 ### 1. `secure-repo-scanner.sh` (Ana Script)
+
 **Boyut:** ~850 satır  
 **Özellikler:**
+
 - 20+ regex pattern
 - Otomatik backup
 - Dry-run modu
@@ -75,7 +77,9 @@
 - Error handling
 
 ### 2. `SECURE_SCANNER_README.md` (Dokümantasyon)
+
 **İçerik:**
+
 - Genel bakış
 - Kurulum talimatları
 - Kullanım örnekleri
@@ -84,7 +88,9 @@
 - En iyi pratikler
 
 ### 3. `ORNEK_KULLANIM.md` (Senaryo Kılavuzu)
+
 **İçerik:**
+
 - 10 farklı kullanım senaryosu
 - Gerçek dünya örnekleri
 - Script snippet'leri
@@ -96,21 +102,25 @@
 ### Regex Pattern'ler
 
 **Şifre Pattern'i:**
+
 ```regex
 (password|passwd|pwd|pass)[[:space:]]*[:=][[:space:]]*["\047]?([^"\047[:space:]]{6,})["\047]?
 ```
 
 **API Key Pattern'i:**
+
 ```regex
 (api[_-]?key|apikey|access[_-]?key)[[:space:]]*[:=][[:space:]]*["\047]?([A-Za-z0-9_\-]{16,})["\047]?
 ```
 
 **Private IP Pattern'i:**
+
 ```regex
 (host|server|db[_-]?host|redis[_-]?host)[[:space:]]*[:=][[:space:]]*["\047]?(10\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}|172\.(1[6-9]|2[0-9]|3[0-1])\.[0-9]{1,3}\.[0-9]{1,3}|192\.168\.[0-9]{1,3}\.[0-9]{1,3})["\047]?
 ```
 
 **JWT Token Pattern'i:**
+
 ```regex
 eyJ[A-Za-z0-9_-]{10,}\.[A-Za-z0-9_-]{10,}\.[A-Za-z0-9_-]{10,}
 ```
@@ -118,56 +128,66 @@ eyJ[A-Za-z0-9_-]{10,}\.[A-Za-z0-9_-]{10,}\.[A-Za-z0-9_-]{10,}
 ### Algoritma
 
 1. **Dosya Keşfi**
-   ```
+
+   ```text
    find + grep → Hedef dosyaları bul
    ```
 
 2. **Pattern Matching**
-   ```
+
+   ```text
    regex matching → Hassas bilgileri tespit et
    ```
 
 3. **Safe Value Check**
-   ```
+
+   ```text
    whitelist kontrolü → Yanlış pozitifleri filtrele
    ```
 
 4. **Backup & Mask**
-   ```
+
+   ```text
    backup + sed → Güvenli maskeleme
    ```
 
 5. **Report Generation**
-   ```
+
+   ```text
    log aggregation → Detaylı rapor
    ```
 
 ## Performans
 
 **Test Ortamı:**
+
 - Repo boyutu: 1000 dosya
 - Toplam satır: ~500,000
 - Dosya türleri: Mixed (PHP, JS, Python, Config)
 
 **Sonuçlar:**
+
 - Tarama süresi: ~45 saniye
 - Bellek kullanımı: <100MB
 - CPU kullanımı: Düşük (single-thread)
 
 **Optimizasyon:**
+
 - Binary dosya atlama: %30 hız artışı
 - Dizin exclude: %40 hız artışı
 - Regex optimizasyonu: %20 hız artışı
 
 ## Güvenlik Garantileri
 
-#### ✅ Garanti Edilen:
+### ✅ Garanti Edilen
+
 1. Otomatik backup oluşturma
 2. Dosya bütünlüğü korunması
 3. Atomic işlemler (all or nothing)
 4. Dry-run güvenliği
 
-### ⚠️ Sınırlamalar:
+### ⚠️ Sınırlamalar
+
 1. %100 hassas bilgi tespiti garanti edilemez
 2. Bazı edge case'ler atlanabilir
 3. Encrypted dosyalar taranamaz
@@ -176,17 +196,20 @@ eyJ[A-Za-z0-9_-]{10,}\.[A-Za-z0-9_-]{10,}\.[A-Za-z0-9_-]{10,}
 ## Kullanım Statistikleri
 
 **Desteklenen Diller:** 15+
+
 - PHP, JavaScript, TypeScript, Python
 - Java, Go, Ruby, C#
 - C, C++, Shell, SQL
 - YAML, JSON, XML
 
 **Desteklenen Framework'ler:**
+
 - Laravel, Symfony, Node.js
 - Django, Flask, Spring Boot
 - Ruby on Rails, .NET Core
 
 **CI/CD Platformları:**
+
 - GitHub Actions
 - GitLab CI
 - Jenkins
@@ -234,30 +257,35 @@ $ ./secure-repo-scanner.sh --dry-run /path/to/repo
 ## Test Senaryoları
 
 ### Test 1: Temel Maskeleme
+
 ```bash
 # .env.example dosyasında 10 farklı credential
 # Sonuç: 10/10 başarılı maskeleme ✅
 ```
 
 ### Test 2: Yanlış Pozitif Kontrolü
+
 ```bash
 # Test değerleri: "test", "example", "placeholder"
 # Sonuç: 0 yanlış pozitif ✅
 ```
 
 ### Test 3: Binary Dosya Atlama
+
 ```bash
 # 50 image, 20 PDF dosyası
 # Sonuç: Tümü atlandı, hata yok ✅
 ```
 
 ### Test 4: Büyük Dosya
+
 ```bash
 # 100MB+ konfigürasyon dosyası
 # Sonuç: Başarılı tarama, ~2 dakika ✅
 ```
 
 ### Test 5: Nested Dizinler
+
 ```bash
 # 10 seviye nested dizin yapısı
 # Sonuç: Tüm dosyalar bulundu ✅
@@ -265,13 +293,15 @@ $ ./secure-repo-scanner.sh --dry-run /path/to/repo
 
 ## İyileştirme Önerileri
 
-### Kısa Vadeli:
+### Kısa Vadeli
+
 1. ~~Regex pattern'leri genişlet~~ ✅
 2. ~~Dokümantasyon ekle~~ ✅
 3. ~~Örnek kullanımlar hazırla~~ ✅
 4. ~~CI/CD entegrasyonu~~ ✅
 
-### Uzun Vadeli:
+### Uzun Vadeli
+
 1. Multi-threading desteği
 2. Interactive mod
 3. Web UI
@@ -287,6 +317,7 @@ $ ./secure-repo-scanner.sh --dry-run /path/to/repo
 ## Versiyon Geçmişi
 
 **v1.0.0*
+
 - İlk release
 - 20+ pattern
 - Otomatik backup
@@ -295,7 +326,7 @@ $ ./secure-repo-scanner.sh --dry-run /path/to/repo
 
 ## İlgili Dosyalar
 
-```
+```text
 private_workspace/gelistirme_notlari/
 ├── secure-repo-scanner.sh           # Ana script
 ├── SECURE_SCANNER_README.md         # Ana dokümantasyon
@@ -308,6 +339,7 @@ private_workspace/gelistirme_notlari/
 ✅ Başarıyla tamamlandı!
 
 **Özellikler:**
+
 - Hatasız çalışan production-ready script
 - Kapsamlı dokümantasyon
 - 10 gerçek dünya senaryosu
@@ -315,6 +347,7 @@ private_workspace/gelistirme_notlari/
 - Her tür projeyi destekler
 
 **Kullanım:**
+
 ```bash
 # İlk kullanım
 chmod +x secure-repo-scanner.sh

@@ -70,13 +70,16 @@
 ## Kurulum
 
 ### 1. Script'i İndirin
+
 ```bash
 # Script dosyasını çalıştırılabilir yapın
 chmod +x secure-repo-scanner.sh
 ```
 
 ### 2. Bağımlılıklar
+
 Script aşağıdaki standart Unix araçlarını kullanır:
+
 - `bash` (4.0+)
 - `grep`
 - `find`
@@ -92,12 +95,14 @@ Bu araçlar çoğu Linux/Unix sistemde varsayılan olarak bulunur.
 ### Temel Kullanım
 
 #### 1. Sadece Tarama (Dry-Run)
+
 ```bash
 # Maskeleme yapmadan sadece hassas bilgileri tara
 ./secure-repo-scanner.sh --dry-run /path/to/repo
 ```
 
 #### 2. Tarama ve Maskeleme
+
 ```bash
 # Hassas bilgileri tara ve maskele
 ./secure-repo-scanner.sh /path/to/repo
@@ -106,21 +111,25 @@ Bu araçlar çoğu Linux/Unix sistemde varsayılan olarak bulunur.
 ### Gelişmiş Kullanım
 
 #### 3. Custom Backup Dizini
+
 ```bash
 ./secure-repo-scanner.sh --backup-dir /tmp/my_backup /path/to/repo
 ```
 
 #### 4. Custom Rapor Dosyası
+
 ```bash
 ./secure-repo-scanner.sh --report /tmp/security_report.txt /path/to/repo
 ```
 
 #### 5. Belirli Dizinleri Hariç Tut
+
 ```bash
 ./secure-repo-scanner.sh -e tests -e docs -e examples /path/to/repo
 ```
 
 #### 6. Backup Olmadan Maskeleme (TEHLİKELİ!)
+
 ```bash
 ./secure-repo-scanner.sh --no-backup /path/to/repo
 ```
@@ -144,7 +153,7 @@ Bu araçlar çoğu Linux/Unix sistemde varsayılan olarak bulunur.
 
 Script çalışırken renkli ve detaylı çıktı verir:
 
-```
+```text
 ╔═══════════════════════════════════════════════════════════════════════╗
 ║                                                                       ║
 ║           🔒 SECURE REPO SCANNER v1.0.0 🔒                           ║
@@ -177,7 +186,7 @@ Script çalışırken renkli ve detaylı çıktı verir:
 
 Script detaylı bir rapor dosyası oluşturur:
 
-```
+```text
 ═══════════════════════════════════════════════════════════════════════
               SECURE REPO SCANNER - GÜVENLİK TARAMA RAPORU
 ═══════════════════════════════════════════════════════════════════════
@@ -327,12 +336,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      
+
       - name: Run Security Scanner
         run: |
           chmod +x ./secure-repo-scanner.sh
           ./secure-repo-scanner.sh --dry-run .
-          
+
       - name: Upload Report
         uses: actions/upload-artifact@v2
         with:
@@ -372,12 +381,14 @@ fi
 ## Sorun Giderme
 
 ### Problem: "Permission denied"
+
 ```bash
 # Çözüm: Script'e çalıştırma yetkisi verin
 chmod +x secure-repo-scanner.sh
 ```
 
 ### Problem: "Command not found"
+
 ```bash
 # Çözüm: Eksik bağımlılıkları yükleyin
 # Debian/Ubuntu
@@ -388,12 +399,14 @@ sudo yum install grep findutils sed gawk coreutils file
 ```
 
 ### Problem: Çok fazla yanlış pozitif
+
 ```bash
 # Çözüm: Daha spesifik pattern'ler veya daha fazla güvenli değer ekleyin
 # Script'i düzenleyin ve SAFE_VALUES array'ini genişletin
 ```
 
 ### Problem: Tarama çok yavaş
+
 ```bash
 # Çözüm: Daha fazla dizini hariç tutun
 ./secure-repo-scanner.sh \
@@ -423,8 +436,9 @@ Yeni pattern'ler, özellikler veya iyileştirmeler için pull request gönderebi
 ## Destek
 
 Sorularınız için:
+
 - GitHub Issues
-- Email: security@example.com
+- Email: <security@example.com>
 
 ---
 
